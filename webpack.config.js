@@ -47,7 +47,13 @@ module.exports = (_env,argv)=> {
   // edit webpack plugins here!
   let plugins = [
     new CleanWebpackPlugin(['dist']),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ]
 
   for(name in entryPoints){
@@ -72,6 +78,11 @@ module.exports = (_env,argv)=> {
     },
     module: {
       rules: [
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
+        },
         {
           test: /\.(js|jsx)$/,
           exclude: /(node_modules|bower_components)/,
@@ -98,7 +109,15 @@ module.exports = (_env,argv)=> {
         }
       ]
     },
-    resolve: { extensions: ['*', '.js', '.jsx'] },
+    resolve: {
+      extensions: ['*','.tsx', '.ts', '.js', '.jsx'],
+      fallback: {
+        "crypto": require.resolve("crypto-browserify"),
+        "util": require.resolve("util/"),
+        "stream": require.resolve("stream-browserify"),
+        "buffer": require.resolve("buffer/")
+      }
+    },
     output: {
       filename: "[name].bundle.js",
       path:bundlePath
@@ -109,7 +128,7 @@ module.exports = (_env,argv)=> {
   if(argv.mode==='development'){
     config.devServer = {
       contentBase: path.join(__dirname,'public'),
-      host:argv.devrig ? 'localhost.rig.twitch.tv' : 'localhost',
+      host: '0.0.0.0',
       headers: {
         'Access-Control-Allow-Origin': '*'
       },

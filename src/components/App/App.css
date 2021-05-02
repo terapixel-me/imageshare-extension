@@ -1,11 +1,21 @@
 .App {
     font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
 }
 
 .App-light{
     color:#232127;
+    background: #f0f9ff;
+    min-height: 100vh;
 }
 
 .App-dark{
     color:#e5e3e8;
+    background: #1f1f2b;
+    min-height: 100vh;
 }
